@@ -11,8 +11,8 @@ namespace ScalableDiff.UnitTests.Domain.Processors
         public async Task Executing_WithDifferentSizeData_ShouldReturnMatchProcessResult()
         {
             // Arrange
-            var expectedLeftData = SetupDiffData("min text");
-            var expectedRightData = SetupDiffData("large text");
+            var expectedLeftData = SetupDiffData("bWluIHRleHQ");
+            var expectedRightData = SetupDiffData("bGFyZ2UgdGV4dA");
 
             var processor = SetupProcessor();
 
@@ -28,8 +28,8 @@ namespace ScalableDiff.UnitTests.Domain.Processors
         public async Task ExecutingChain_WithEqualsSizeData_ShouldReturnNoMatchProcessResult()
         {
             // Arrange
-            var expectedLeftData = SetupDiffData("same text");
-            var expectedRightData = SetupDiffData("same text");
+            var expectedLeftData = SetupDiffData("c2FtZSB0ZXh0IGRhdGE");
+            var expectedRightData = SetupDiffData("c2FtZSB0ZXh0IGRhdGE");
 
             var processor = SetupProcessor();
 

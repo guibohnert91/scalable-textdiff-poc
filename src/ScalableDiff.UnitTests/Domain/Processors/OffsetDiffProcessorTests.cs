@@ -11,8 +11,8 @@ namespace ScalableDiff.UnitTests.Domain.Processors
         public async Task Executing_WithLeftPrecedingData_ShouldReturnMatchProcessResult()
         {
             // Arrange
-            var expectedLeftData = SetupDiffData("abc text");
-            var expectedRightData = SetupDiffData("bca text");
+            var expectedLeftData = SetupDiffData("dGV4dCB0d28");
+            var expectedRightData = SetupDiffData("dGV4dCBvbmU");
 
             var processor = SetupProcessor();
 
@@ -28,8 +28,8 @@ namespace ScalableDiff.UnitTests.Domain.Processors
         public async Task Executing_WithLeftFollowingData_ShouldReturnMatchProcessResult()
         {
             // Arrange
-            var expectedLeftData = SetupDiffData("bca text");
-            var expectedRightData = SetupDiffData("abc text");
+            var expectedLeftData = SetupDiffData("dGV4dCBvbmUgYWdhaW4");
+            var expectedRightData = SetupDiffData("dGV4dCB0d28gYWdhaW4");
 
             var processor = SetupProcessor();
 
@@ -45,8 +45,8 @@ namespace ScalableDiff.UnitTests.Domain.Processors
         public async Task ExecutingChain_WithNoOffsetData_ShouldReturnNoMatchProcessResult()
         {
             // Arrange
-            var expectedLeftData = SetupDiffData("one text");
-            var expectedRightData = SetupDiffData("another text");
+            var expectedLeftData = SetupDiffData("c29tZSBlbmMgdGV4dA");
+            var expectedRightData = SetupDiffData("ZGlmZmVyZW50IGVuYyB0ZXh0");
 
             var processor = SetupProcessor();
 
@@ -55,7 +55,7 @@ namespace ScalableDiff.UnitTests.Domain.Processors
 
             // Assert
             Assert.False(actualResult.Match);
-            Assert.Equal("The left and right match.", actualResult.Message);
+            Assert.Equal("The left and right has no offsets.", actualResult.Message);
         }
 
         private static IDiffProcessor SetupProcessor()

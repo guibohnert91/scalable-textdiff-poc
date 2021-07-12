@@ -18,7 +18,7 @@ namespace ScalableDiff.Domain.Processors
                     return Task.FromResult(DiffProcessorResult.Create(true, "Left follows right."));
             }
 
-            return Task.FromResult(DiffProcessorResult.Create(false, "The left and right match."));
+            return Task.FromResult(DiffProcessorResult.Create(false, "The left and right has no offsets."));
         }
     }
 }
