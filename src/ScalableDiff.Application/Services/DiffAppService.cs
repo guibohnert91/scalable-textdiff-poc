@@ -35,9 +35,12 @@ namespace ScalableDiff.Application.Services
 
         public virtual async Task<DiffSummary> ExecuteDiff(Guid sessionId)
         {
+            if (sessionId == Guid.Empty)
+                throw new ArgumentException(nameof(sessionId), "Diff session id must not be empty.");
+
             var diffSession = await diffStore.ReadAsync(sessionId);
             if (diffSession == null)
-                return DiffSummary.Create( $"Diff session with id '{sessionId}' not found.");
+                return null;
 
             var diffResult = await diffService.ExecuteAsync(diffSession);
             
@@ -47,6 +50,9 @@ namespace ScalableDiff.Application.Services
 
         public virtual async Task<bool> SetLeftDiffContent(DiffContent content)
         {
+            if (content == null)
+                throw new ArgumentNullException(nameof(content));
+
             //todo: factory para criar do dominio ou converter
             var diffSession = await diffService.GetSessionAsync(content.SessionId);
 
@@ -60,6 +66,9 @@ namespace ScalableDiff.Application.Services
 
         public virtual async Task<bool> SetRightDiffContent(DiffContent content)
         {
+            if (content == null)
+                throw new ArgumentNullException(nameof(content));
+
             var diffSession = await diffService.GetSessionAsync(content.SessionId);
 
             var diffData = mapper.Map<DiffData>(content);
