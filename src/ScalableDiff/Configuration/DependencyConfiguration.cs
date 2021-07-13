@@ -31,7 +31,7 @@ namespace ScalableDiff.Configuration
 
         public static void AddInfrastructure(this IServiceCollection services)
         {
-            services.AddSingleton(typeof(IStore<Diff>), typeof(DiffSessionStore));
+            services.AddSingleton(typeof(IStore<Diff>), typeof(DiffStore));
 
         }
     }

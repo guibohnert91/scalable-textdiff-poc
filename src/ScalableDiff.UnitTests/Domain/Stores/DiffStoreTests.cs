@@ -4,11 +4,11 @@ using ScalableDiff.Infrastructure.Stores;
 
 namespace ScalableDiff.UnitTests.Domain.Stores
 {
-    public class DiffSessionStoreTests : StoreBaseTests<Diff>
+    public class DiffStoreTests : StoreBaseTests<Diff>
     {
         protected override IStore<Diff> SetupStore()
         {
-            return new DiffSessionStore();
+            return new DiffStore();
         }
     }
 }

@@ -4,17 +4,17 @@ namespace ScalableDiff.Application.Models
 {
     public class DiffContent
     {
-        public Guid SessionId { get; init; }
+        public Guid Id { get; init; }
 
         public string Content { get; init; }
 
         protected DiffContent() { }
 
-        public static DiffContent Create(Guid sessionId, string content)
+        public static DiffContent Create(Guid id, string content)
         {
             return new DiffContent
             {
-                SessionId = sessionId,
+                Id = id,
                 Content = content
             };
         }

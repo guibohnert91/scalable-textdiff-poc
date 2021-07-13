@@ -12,18 +12,18 @@ namespace ScalableDiff.Domain
     public interface IDiffService
     {
         /// <summary>
-        /// Gets a session with the supplied id.
+        /// Gets a diff with the supplied id.
         /// </summary>
-        /// <param name="sessionId">The diff id.</param>
+        /// <param name="id">The diff id.</param>
         /// <returns>A Diff.</returns>
-        Task<Diff> GetSessionAsync(Guid sessionId);
+        Task<Diff> GetAsync(Guid id);
 
         /// <summary>
         /// Executes the supplied diff.
         /// </summary>
-        /// <param name="session">The diff to execute.</param>
+        /// <param name="diff">The diff to execute.</param>
         /// <returns>The difing processor result.</returns>
-        Task<DiffProcessorResult> ExecuteAsync(Diff session);
+        Task<DiffProcessorResult> ExecuteAsync(Diff diff);
     }
 
     /// <inheritdoc />
@@ -41,29 +41,29 @@ namespace ScalableDiff.Domain
 
         /// <inheritdoc />
         /// <exception cref="System.ArgumentNullException">
-        /// <paramref name="session"/> is <c>null</c>.
+        /// <paramref name="diff"/> is <c>null</c>.
         /// </exception>
-        public async Task<DiffProcessorResult> ExecuteAsync(Diff session)
+        public async Task<DiffProcessorResult> ExecuteAsync(Diff diff)
         {
-            if (session == null)
-                throw new ArgumentNullException(nameof(session), "Can't execute a null session.");
+            if (diff == null)
+                throw new ArgumentNullException(nameof(diff), "Can't execute a null diff.");
 
-            var diffResult = await diffProcessor.Execute(session.Left, session.Right);
+            var diffResult = await diffProcessor.Execute(diff.Left, diff.Right);
             return diffResult;
         }
 
         /// <inheritdoc />
         /// <exception cref="System.ArgumentException">
-        /// <paramref name="sessionId"/> is <c>empty</c>.
+        /// <paramref name="id"/> is <c>empty</c>.
         /// </exception>
-        public async Task<Diff> GetSessionAsync(Guid sessionId)
+        public async Task<Diff> GetAsync(Guid id)
         {
-            if(sessionId == Guid.Empty)
-                throw new ArgumentException(nameof(sessionId), "Session id can't be empty.");
+            if(id == Guid.Empty)
+                throw new ArgumentException(nameof(id), "Diff id can't be empty.");
 
-            var diffSession = await diffStore.ReadAsync(sessionId);
+            var diffSession = await diffStore.ReadAsync(id);
 
-            return diffSession ?? Diff.Create(sessionId);
+            return diffSession ?? Diff.Create(id);
         }
     }
 }

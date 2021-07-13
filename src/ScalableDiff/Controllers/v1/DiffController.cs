@@ -22,21 +22,21 @@ namespace ScalableDiff.Controllers.v1
         }
 
         /// <summary>
-        /// Sets the left content of the diff within a session.
+        /// Sets the left content of the diff within a .
         /// </summary>
-        /// <param name="sessionId">The session id of the content.</param>
+        /// <param name="id">The  id of the content.</param>
         /// <param name="content">The left content details.</param>        
         /// <response code="200">Returns ok</response>
-        [HttpPost("{sessionId}/Left")]
+        [HttpPost("{id}/Left")]
         [MapToApiVersion("1.0")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> SetLeftContentAsync(Guid sessionId, [FromBody]string content)
+        public async Task<ActionResult> SetLeftContentAsync(Guid id, [FromBody]string content)
         {
             try
             {
-                var diffContent = DiffContent.Create(sessionId, content);
+                var diffContent = DiffContent.Create(id, content);
                 if (await diffAppService.SetLeftDiffContent(diffContent))
                     return Ok();
 
@@ -49,21 +49,21 @@ namespace ScalableDiff.Controllers.v1
         }
 
         /// <summary>
-        /// Sets the right content of the diff within a session.
+        /// Sets the right content of the diff within a .
         /// </summary>
-        /// <param name="sessionId">The session id of the content.</param>
+        /// <param name="id">The  id of the content.</param>
         /// <param name="content">The right content details.</param>        
         /// <response code="200">Returns ok</response>
-        [HttpPost("{sessionId}/Right")]
+        [HttpPost("{id}/Right")]
         [MapToApiVersion("1.0")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> SetRightContentAsync(Guid sessionId, [FromBody] string content)
+        public async Task<ActionResult> SetRightContentAsync(Guid id, [FromBody] string content)
         {
             try
             {
-                var diffContent = DiffContent.Create(sessionId, content);
+                var diffContent = DiffContent.Create(id, content);
                 if(await diffAppService.SetRightDiffContent(diffContent))
                     return Ok();
 
@@ -76,20 +76,20 @@ namespace ScalableDiff.Controllers.v1
         }
 
         /// <summary>
-        /// Executes the diff within a session.
+        /// Executes the diff within a .
         /// </summary>
-        /// <param name="sessionId">The session id of the content.</param>
+        /// <param name="id">The  id of the content.</param>
         /// <response code="200">Returns ok</response>
-        [HttpGet("{sessionId}")]
+        [HttpGet("{id}")]
         [MapToApiVersion("1.0")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> ExecuteAsync(Guid sessionId)
+        public async Task<ActionResult> ExecuteAsync(Guid id)
         {
             try
             {
-                return Ok(await diffAppService.ExecuteDiff(sessionId));
+                return Ok(await diffAppService.ExecuteDiff(id));
             }
             catch (Exception ex)
             {

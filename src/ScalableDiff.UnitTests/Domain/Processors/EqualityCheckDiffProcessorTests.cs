@@ -20,7 +20,7 @@ namespace ScalableDiff.UnitTests.Domain.Processors
             var actualResult = await processor.Execute(expectedLeftData, expectedRightData);
 
             // Assert
-            Assert.True(actualResult.Match);
+            Assert.True(actualResult.Handled);
             Assert.Equal("Left equals right.", actualResult.Message);
         }
 
@@ -37,7 +37,7 @@ namespace ScalableDiff.UnitTests.Domain.Processors
             var actualResult = await processor.Execute(expectedLeftData, expectedRightData);
 
             // Assert
-            Assert.False(actualResult.Match);
+            Assert.False(actualResult.Handled);
             Assert.Equal("Left and right differs.", actualResult.Message);
         }
 
