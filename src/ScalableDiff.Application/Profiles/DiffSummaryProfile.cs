@@ -11,7 +11,7 @@ namespace ScalableDiff.Application.Profiles
     {
         public DiffSummaryProfile()
         {
-            CreateMap<DiffSummary, DiffProcessorResult>();
+            CreateMap<DiffSummary, DiffProcessorResult>().ReverseMap();
         }
     }
 }

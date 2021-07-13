@@ -11,7 +11,7 @@ namespace ScalableDiff.Application.Profiles
     {        
         public DiffContentProfile()
         {
-            CreateMap<DiffContent, DiffData>();
+            CreateMap<DiffContent, DiffData>().ReverseMap();
         }
     }
 }
