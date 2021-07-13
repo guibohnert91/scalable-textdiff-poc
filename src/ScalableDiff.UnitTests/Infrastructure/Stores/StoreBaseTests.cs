@@ -4,7 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace ScalableDiff.UnitTests.Domain.Stores
+namespace ScalableDiff.UnitTests.Infrastructure.Stores
 {
     public abstract class StoreBaseTests<TData> where TData : class
     {
