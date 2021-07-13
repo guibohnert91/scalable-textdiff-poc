@@ -15,6 +15,7 @@ namespace ScalableDiff
         {
             services.AddControllers();
 
+            // Adding a basic api versioning.
             services.AddApiVersioning(config =>
             {
                 config.DefaultApiVersion = new ApiVersion(1, 0);
@@ -22,9 +23,12 @@ namespace ScalableDiff
                 config.ReportApiVersions = true;
             });
 
+            // Registering the implementation dependencies.
             services.AddApplication();
             services.AddDomain();
             services.AddInfrastructure();
+
+            // Adding swagger for a basic helping documentation allowing some testing UI.
             services.AddSwaggerDocumentation();
         }
 

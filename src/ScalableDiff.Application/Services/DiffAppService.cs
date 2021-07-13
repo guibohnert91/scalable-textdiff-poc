@@ -56,6 +56,7 @@ namespace ScalableDiff.Application.Services
         /// <exception cref="System.ArgumentException">
         /// <paramref name="id"/> is <c>empty</c>.
         /// </exception>
+        /// <returns>If the supplied id matches an existing diff, the summary. Otherwise, null.</returns>
         public virtual async Task<DiffSummary> ExecuteDiff(Guid id)
         {
             if (id == Guid.Empty)

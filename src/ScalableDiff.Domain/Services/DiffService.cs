@@ -1,6 +1,6 @@
 ﻿using ScalableDiff.Domain.Models;
-using ScalableDiff.Domain.ValueObjects;
 using ScalableDiff.Domain.Stores;
+using ScalableDiff.Domain.ValueObjects;
 using System;
 using System.Threading.Tasks;
 
@@ -62,6 +62,10 @@ namespace ScalableDiff.Domain
                 throw new ArgumentException(nameof(id), "Diff id can't be empty.");
 
             var diffSession = await diffStore.ReadAsync(id);
+
+            /* Since it's a POC, I'm assuming that when there are no diff with the supplied id,
+               it will return a new blank diff to the caller with the supplied id.
+            */
 
             return diffSession ?? Diff.Create(id);
         }

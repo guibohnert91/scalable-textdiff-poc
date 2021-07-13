@@ -18,6 +18,12 @@ namespace ScalableDiff.Domain.Processors
         /// <returns>Left side precedes, follow or has no offsets.</returns>
         protected override Task<DiffProcessorResult> Process(DiffData left, DiffData right)
         {
+            /* 
+             * I will assume this is a good logic to implement to compare the left and right sides.        
+             * Since "actual diffs are not needed ", this is doing only an offset check 
+             * to determine if the left data precedes or follows the right data.
+             * It uses the default string compare method, calculating the offsets based in the same position in the sort order.
+            */
             if (left.Content.Length == right.Content.Length)
             {
                 var offset = left.Content.CompareTo(right.Content);

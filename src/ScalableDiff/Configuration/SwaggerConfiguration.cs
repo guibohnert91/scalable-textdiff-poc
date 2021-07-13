@@ -7,8 +7,14 @@ using System.Reflection;
 
 namespace ScalableDiff.Configuration
 {
+    /// <summary>
+    /// Contains easy to access services extensions to register the swagger documentation.
+    /// </summary>
     public static class SwaggerConfiguration
     {
+        /// <summary>
+        /// Register the swagger dependencies.
+        /// </summary>
         public static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services)
         {
             services.AddSwaggerGen(options =>
@@ -20,6 +26,8 @@ namespace ScalableDiff.Configuration
                     Description = "Provides basic diff funcionality.",
                 });
 
+                // This is needed since swagger doesn't load the xml docs by default.
+                // Also must be enabled to generate at compile time.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 
@@ -29,6 +37,9 @@ namespace ScalableDiff.Configuration
             return services;
         }
 
+        /// <summary>
+        /// Enables swagger within the api.
+        /// </summary>
         public static IApplicationBuilder UseSwaggerDocumentation(this IApplicationBuilder app)
         {
             app.UseSwagger();
