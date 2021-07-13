@@ -6,6 +6,11 @@
 
         protected DiffData() { }
 
+        /// <summary>
+        /// Creates a new diff data.
+        /// </summary>
+        /// <param name="content">The content of the diff data.</param>
+        /// <returns>A diff data.</returns>
         public static DiffData Create(string content)
         {
             return new DiffData

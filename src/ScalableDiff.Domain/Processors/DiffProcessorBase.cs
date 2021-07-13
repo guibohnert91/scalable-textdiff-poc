@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace ScalableDiff.Domain.Processors
 {
     /// <summary>
-    /// Abstract implementation of a chain of responsibility pattern.
+    /// Abstract implementation of a diff processor using a chain of responsibility pattern.
     /// </summary>
     public abstract class DiffProcessorBase : IDiffProcessor
     {
@@ -15,11 +15,17 @@ namespace ScalableDiff.Domain.Processors
             this.nextProcessor = processor;
         }
 
-        public async Task<DiffProcessorResult> Execute(DiffData left, DiffData right)
+        /// <summary>
+        /// Executes the diffing process using a chain of processors until a processor is match.
+        /// </summary>
+        /// <param name="left">The left diff data to compare.</param>
+        /// <param name="right">The right diff data to compare.</param>
+        /// <returns>The diffing chain process result.</returns>
+        public virtual async Task<DiffProcessorResult> Execute(DiffData left, DiffData right)
         {
             var processResult = await Process(left, right);
             
-            if (!processResult.Match && nextProcessor != null)
+            if (!processResult.Handled && nextProcessor != null)
                 return await nextProcessor.Execute(left, right);
 
             return processResult;

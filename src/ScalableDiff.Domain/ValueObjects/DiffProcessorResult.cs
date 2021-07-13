@@ -2,17 +2,23 @@
 {
     public class DiffProcessorResult
     {
-        public bool Match { get; init; }
+        public bool Handled { get; init; }
 
         public string Message { get; init; }
 
         protected DiffProcessorResult() { }
 
-        public static DiffProcessorResult Create(bool match, string message = null)
+        /// <summary>
+        /// Creates a new diff processor result.
+        /// </summary>
+        /// <param name="handled">if the result is handled.</param>
+        /// <param name="message">The result message.</param>
+        /// <returns>A diff processor result.</returns>
+        public static DiffProcessorResult Create(bool handled, string message = null)
         {
             return new DiffProcessorResult
             {
-                Match = match,
+                Handled = handled,
                 Message = message
             };
         }
