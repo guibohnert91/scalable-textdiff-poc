@@ -9,15 +9,34 @@ using System.Threading.Tasks;
 
 namespace ScalableDiff.Application.Services
 {
+    /// <summary>
+    /// Provides basic diffing functionality.
+    /// </summary>
     public interface IDiffAppService
     {
+        /// <summary>
+        /// Defines the left content to compare.
+        /// </summary>
+        /// <param name="content">The left content.</param>
+        /// <returns>True if operation sucessfully.</returns>
         Task<bool> SetLeftDiffContent(DiffContent content);
 
+        /// <summary>
+        /// Defines the right content to compare.
+        /// </summary>
+        /// <param name="content">The right content.</param>
+        /// <returns>True if operation sucessfully.</returns>
         Task<bool> SetRightDiffContent(DiffContent content);
 
+        /// <summary>
+        /// Executes the basic diffing funcionality.
+        /// </summary>
+        /// <param name="id">The diff id to execute.</param>
+        /// <returns>The basic diff summary.</returns>
         Task<DiffSummary> ExecuteDiff(Guid id);
     }
 
+    /// <inheritdoc />    
     public class DiffAppService : IDiffAppService
     {
         private readonly IDiffService diffService;
@@ -33,10 +52,14 @@ namespace ScalableDiff.Application.Services
             this.mapper = mapper;
         }
 
+        /// <inheritdoc />    
+        /// <exception cref="System.ArgumentException">
+        /// <paramref name="id"/> is <c>empty</c>.
+        /// </exception>
         public virtual async Task<DiffSummary> ExecuteDiff(Guid id)
         {
             if (id == Guid.Empty)
-                throw new ArgumentException(nameof(id), "Diff  id must not be empty.");
+                throw new ArgumentException(nameof(id), "Diff id must not be empty.");
 
             var diff = await diffStore.ReadAsync(id);
             if (diff == null)
@@ -48,6 +71,10 @@ namespace ScalableDiff.Application.Services
             return diffSummary;
         }
 
+        /// <inheritdoc />    
+        /// <exception cref="System.ArgumentNullException">
+        /// <paramref name="content"/> is <c>null</c>.
+        /// </exception>
         public virtual async Task<bool> SetLeftDiffContent(DiffContent content)
         {
             if (content == null)
@@ -64,6 +91,10 @@ namespace ScalableDiff.Application.Services
             return true;
         }
 
+        /// <inheritdoc />    
+        /// <exception cref="System.ArgumentNullException">
+        /// <paramref name="content"/> is <c>null</c>.
+        /// </exception>
         public virtual async Task<bool> SetRightDiffContent(DiffContent content)
         {
             if (content == null)
