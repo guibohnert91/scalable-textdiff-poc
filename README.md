@@ -44,19 +44,16 @@ There are documentation by the code, also I tried to be consitent with the namin
 - Dependency Injection using the default DI container.
 - Swagger for basic api documentation.
 
-
 ### Application
 This contains all application logic and is dependent on the domain layer and infrastructure.
 
-
 ### Domain
 This will contain all entities, enums, interfaces, types and logic specific to the domain layer.
-
+The diffing process is defined within this lib using a chain of responsability. It turns out to be simple to add, replace or swapp the text analysis/diffing steps.
 
 ### Infrastructure
 This project is suposed to contain classes for accessing external resources such as databases, web services, smtp, and so on. 
 Here it's possible to find a Store implenentation specified in the domain layer, that works with in memory data.
-
 
 ## WebApi
 This is a web api application based on ASP.NET 5.0.x. Here it will define the diff controller and register the dependency graph as well.
