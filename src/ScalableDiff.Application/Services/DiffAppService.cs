@@ -81,7 +81,6 @@ namespace ScalableDiff.Application.Services
             if (content == null)
                 throw new ArgumentNullException(nameof(content));
 
-            //todo: factory para criar do dominio ou converter
             var diff = await diffService.GetAsync(content.Id);
 
             var diffData = mapper.Map<DiffData>(content);
