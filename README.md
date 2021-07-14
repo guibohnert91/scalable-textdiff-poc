@@ -1,4 +1,4 @@
-# Assignment Scalable Web
+# Scalable Text Diff POC
 
 ### Running the code
 
@@ -29,7 +29,7 @@ To run the integration tests, use the following steps:
 
 ## About the solution & Overview
 
-A simple poc for text diffing. 
+This is a simple PoC (Proof of Concept) for a text diffing api. 
 
 The project follows a simplified version of a DDD style project. 
 I did it as simple as possible to match the criterias specified in the assignement.
