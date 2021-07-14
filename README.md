@@ -12,7 +12,7 @@ It's possible to execute via command line too, folllowing some steps:
 
 There are 26 unit tests available that cover most of the implementation.
 I didn't implement the Models and AutoMapper profiles tests.
-To run the integration tests, use the following steps:
+To run the unit tests, use the following steps:
 
 - 1: Navigate to the project folder ```scr/ScalableDiff.UnitTests/```
 - 2: Open a terminal and run the following command: ```dotnet test ScalableDiff.UnitTests.csproj```
