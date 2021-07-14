@@ -75,7 +75,11 @@ namespace ScalableDiff.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult> ExecuteAsync(Guid id)
         {
-            return Ok(await diffAppService.ExecuteDiff(id));
+            var diffSummary = await diffAppService.ExecuteDiff(id);
+            if(diffSummary != null)
+                return Ok(diffSummary);
+
+            return NotFound();
         }
     }
 }

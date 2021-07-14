@@ -4,8 +4,6 @@
     {
         public string Message { get; init; }
 
-        protected DiffSummary() { }
-
         /// <summary>
         /// Creates a new diff summary.
         /// </summary>
