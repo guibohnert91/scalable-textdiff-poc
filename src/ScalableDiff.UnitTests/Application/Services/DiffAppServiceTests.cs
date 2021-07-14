@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using Moq;
+using ScalableDiff.Application.Models;
+using ScalableDiff.Application.Profiles;
 using ScalableDiff.Application.Services;
 using ScalableDiff.Domain;
 using ScalableDiff.Domain.Models;
 using ScalableDiff.Domain.Stores;
+using ScalableDiff.Domain.ValueObjects;
 using System;
 using System.Threading.Tasks;
 using Xunit;
@@ -13,27 +16,43 @@ namespace ScalableDiff.UnitTests.Application.Services
     public class DiffAppServiceTests
     {
         [Fact]
-        public async Task SettingLeftDiffContent_WithValidContent_ShouldUpdateDiffSessionAndReturnTrueResult()
+        public async Task SettingLeftDiffContent_WithValidContent_ShouldUpdateDiffAndReturnTrueResult()
         {
-            throw new NotImplementedException();
+            // Arrange
+            var expectedId = Guid.Parse("D3177120-A79A-43B9-9562-599973857A4B");
+            var expectedDiff = Diff.Create(expectedId);
+            var expectedDiffContent = DiffContent.Create(expectedId, "left content");
+
+            var diffServiceMock = new Mock<IDiffService>();
+            diffServiceMock.Setup(m => m.GetAsync(expectedId)).ReturnsAsync(expectedDiff);
+
+            var service = SetupService(diffService: diffServiceMock.Object);
+
+            // Act
+            var actualResult = await service.SetLeftDiffContent(expectedDiffContent);
+
+            // Assert
+            Assert.True(actualResult);
         }
 
         [Fact]
-        public async Task SettingRightDiffContent_WithValidContent_ShouldUpdateDiffSessionAndReturnTrueResult()
+        public async Task SettingRightDiffContent_WithValidContent_ShouldUpdateDiffAndReturnTrueResult()
         {
-            throw new NotImplementedException();
-        }
+            // Arrange
+            var expectedId = Guid.Parse("D3177120-A79A-43B9-9562-599973857A4B");
+            var expectedDiff = Diff.Create(expectedId);
+            var expectedDiffContent = DiffContent.Create(expectedId, "right content");
 
-        [Fact]
-        public async Task SettingLeftDiffContent_WithInvalidContent_ShouldNotUpdateDiffSessionAndReturnFalseResult()
-        {
-            throw new NotImplementedException();
-        }
+            var diffServiceMock = new Mock<IDiffService>();
+            diffServiceMock.Setup(m => m.GetAsync(expectedId)).ReturnsAsync(expectedDiff);
 
-        [Fact]
-        public async Task SettingRightDiffContent_WithInvalidContent_ShouldNotUpdateDiffSessionAndReturnFalseResult()
-        {
-            throw new NotImplementedException();
+            var service = SetupService(diffService: diffServiceMock.Object);
+
+            // Act
+            var actualResult = await service.SetRightDiffContent(expectedDiffContent);
+
+            // Assert
+            Assert.True(actualResult);
         }
 
         [Fact]
@@ -76,17 +95,24 @@ namespace ScalableDiff.UnitTests.Application.Services
             // Arrange
             var expectedId = Guid.Parse("D3177120-A79A-43B9-9562-599973857A4B");
             var expectedDiff = Diff.Create(expectedId);
-            
+            var expectedSummaryMessage = "Expected message";
+            var expectedDiffProcessorResult = DiffProcessorResult.Create(true, expectedSummaryMessage);
+
             var diffStoreMock = new Mock<IStore<Diff>>();
             diffStoreMock.Setup(m => m.ReadAsync(expectedId)).ReturnsAsync(expectedDiff);
 
-            var service = SetupService(diffStore: diffStoreMock.Object);
+            var diffServiceMock = new Mock<IDiffService>();
+            diffServiceMock.Setup(m => m.ExecuteAsync(expectedDiff)).ReturnsAsync(expectedDiffProcessorResult);
+
+            var service = SetupService(diffService: diffServiceMock.Object, diffStore: diffStoreMock.Object);
 
             // Act & Assert
             var actualSummary = await service.ExecuteDiff(expectedId);
 
             // Assert
-            Assert.Null(actualSummary);
+            Assert.NotNull(actualSummary);
+            Assert.NotEmpty(actualSummary.Message);
+            Assert.Equal(expectedSummaryMessage, actualSummary.Message);
         }
 
         [Fact]
@@ -100,12 +126,21 @@ namespace ScalableDiff.UnitTests.Application.Services
         }
 
         private static IDiffAppService SetupService(IDiffService diffService = null,
-                                                    IStore<Diff> diffStore = null,
-                                                    IMapper mapper = null)
+                                                    IStore<Diff> diffStore = null)
         {
             return new DiffAppService(diffService ?? Mock.Of<IDiffService>(),
                                       diffStore ?? Mock.Of<IStore<Diff>>(),
-                                      mapper ?? Mock.Of<IMapper>());
+                                      SetupMapper());
+        }
+
+        private static IMapper SetupMapper()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new DiffContentProfile());
+                cfg.AddProfile(new DiffSummaryProfile());
+            });
+            return config.CreateMapper();
         }
     }
 }
