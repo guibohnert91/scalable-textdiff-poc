@@ -34,10 +34,6 @@ This is a simple PoC (Proof of Concept) for a text diffing api.
 The project follows a simplified version of a DDD style project. 
 I did it as simple as possible to match the criterias specified in the assignement.
 
-For breviety I using some patterns like:
-- Method Factories: using in the Models/Value objects Models), since the models are so simple I didn't write "full factories" in the application.
-- Chain of responsability: using to execute the diffing process (could be like a decorator too)
-
 There are documentation by the code, also I tried to be consitent with the naming/meaning of the methods so It's easy to navigate in the solution.
 
 ### Tecnologies
