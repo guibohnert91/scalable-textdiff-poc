@@ -4,6 +4,7 @@ using ScalableDiff.Application.Models;
 using ScalableDiff.Application.Profiles;
 using ScalableDiff.Application.Services;
 using ScalableDiff.Domain;
+using ScalableDiff.Domain.Factories;
 using ScalableDiff.Domain.Models;
 using ScalableDiff.Domain.Stores;
 using ScalableDiff.Domain.ValueObjects;
@@ -20,7 +21,7 @@ namespace ScalableDiff.UnitTests.Application.Services
         {
             // Arrange
             var expectedId = Guid.Parse("D3177120-A79A-43B9-9562-599973857A4B");
-            var expectedDiff = Diff.Create(expectedId);
+            var expectedDiff = SetupDiff(expectedId);
             var expectedDiffContent = DiffContent.Create(expectedId, "left content");
 
             var diffServiceMock = new Mock<IDiffService>();
@@ -40,7 +41,7 @@ namespace ScalableDiff.UnitTests.Application.Services
         {
             // Arrange
             var expectedId = Guid.Parse("D3177120-A79A-43B9-9562-599973857A4B");
-            var expectedDiff = Diff.Create(expectedId);
+            var expectedDiff = SetupDiff(expectedId);
             var expectedDiffContent = DiffContent.Create(expectedId, "right content");
 
             var diffServiceMock = new Mock<IDiffService>();
@@ -76,35 +77,30 @@ namespace ScalableDiff.UnitTests.Application.Services
         }
 
         [Fact]
-        public async Task ExecutingDiff_WithNonExistentSessionId_ShouldReturnNullSessionSummary()
+        public async Task ExecutingDiff_WithNonExistentDiffId_ShouldThrowInvalidOperationException()
         {
             // Arrange
             var expectedId = Guid.Parse("D3177120-A79A-43B9-9562-599973857A4B");
             var service = SetupService();
 
             // Act & Assert
-            var actualSummary = await service.ExecuteDiff(expectedId);
-
-            // Assert
-            Assert.Null(actualSummary);
+            await Assert.ThrowsAsync<InvalidOperationException>(() => service.ExecuteDiff(expectedId));
         }
 
         [Fact]
-        public async Task ExecutingDiff_WithExistentSessionId_ShouldReturnValidSessionSummary()
+        public async Task ExecutingDiff_WithExistentDiffId_ShouldReturnValidDiffSummary()
         {
             // Arrange
             var expectedId = Guid.Parse("D3177120-A79A-43B9-9562-599973857A4B");
-            var expectedDiff = Diff.Create(expectedId);
+            var expectedDiff = SetupDiff(expectedId);
             var expectedSummaryMessage = "Expected message";
             var expectedDiffProcessorResult = DiffProcessorResult.Create(true, expectedSummaryMessage);
 
-            var diffStoreMock = new Mock<IStore<Diff>>();
-            diffStoreMock.Setup(m => m.ReadAsync(expectedId)).ReturnsAsync(expectedDiff);
-
             var diffServiceMock = new Mock<IDiffService>();
             diffServiceMock.Setup(m => m.ExecuteAsync(expectedDiff)).ReturnsAsync(expectedDiffProcessorResult);
+            diffServiceMock.Setup(m => m.GetAsync(expectedId)).ReturnsAsync(expectedDiff);
 
-            var service = SetupService(diffService: diffServiceMock.Object, diffStore: diffStoreMock.Object);
+            var service = SetupService(diffService: diffServiceMock.Object);
 
             // Act & Assert
             var actualSummary = await service.ExecuteDiff(expectedId);
@@ -116,7 +112,7 @@ namespace ScalableDiff.UnitTests.Application.Services
         }
 
         [Fact]
-        public async Task ExecutingDiff_WithEmptySessionId_ShouldThrowArgumentException()
+        public async Task ExecutingDiff_WithEmptyDiffId_ShouldThrowArgumentException()
         {
             // Arrange
             var service = SetupService();
@@ -125,12 +121,22 @@ namespace ScalableDiff.UnitTests.Application.Services
             await Assert.ThrowsAsync<ArgumentException>(() => service.ExecuteDiff(Guid.Empty));
         }
 
-        private static IDiffAppService SetupService(IDiffService diffService = null,
+        private static IDiffAppService SetupService(IDiffFactory diffFactory = null,
+                                                    IDiffService diffService = null,
                                                     IStore<Diff> diffStore = null)
         {
             return new DiffAppService(diffService ?? Mock.Of<IDiffService>(),
                                       diffStore ?? Mock.Of<IStore<Diff>>(),
                                       SetupMapper());
+        }
+
+        private static Diff SetupDiff(Guid id, string leftContent = null, string rightContent = null)
+        {
+            var diff = new DiffFactory().Create(id);
+            diff.SetLeftData(DiffData.Create(leftContent));
+            diff.SetRightData(DiffData.Create(rightContent));
+
+            return diff;
         }
 
         private static IMapper SetupMapper()

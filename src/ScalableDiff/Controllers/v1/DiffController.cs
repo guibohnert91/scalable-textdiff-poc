@@ -24,6 +24,32 @@ namespace ScalableDiff.Controllers.v1
         }
 
         /// <summary>
+        /// Setups a new diff.
+        /// </summary>
+        /// <param name="id">The  id of the diff.</param>
+        /// <response code="200">Returns ok</response>
+        /// <response code="400">Bad request.</response>
+        [HttpPost]
+        [MapToApiVersion("1.0")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<ActionResult> CreateDiffAsync([FromBody] Guid id)
+        {
+            try
+            {
+                if (await diffAppService.CreateDiff(id))
+                    return Ok();
+
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Sets the left content of the diff within a .
         /// </summary>
         /// <param name="id">The  id of the content.</param>
@@ -36,11 +62,18 @@ namespace ScalableDiff.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult> SetLeftContentAsync(Guid id, [FromBody] string content)
         {
-            var diffContent = DiffContent.Create(id, content);
-            if (await diffAppService.SetLeftDiffContent(diffContent))
-                return Ok();
+            try
+            {
+                var diffContent = DiffContent.Create(id, content);
+                if (await diffAppService.SetLeftDiffContent(diffContent))
+                    return Ok();
 
-            return BadRequest();
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -56,11 +89,18 @@ namespace ScalableDiff.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult> SetRightContentAsync(Guid id, [FromBody] string content)
         {
-            var diffContent = DiffContent.Create(id, content);
-            if (await diffAppService.SetRightDiffContent(diffContent))
-                return Ok();
+            try
+            {
+                var diffContent = DiffContent.Create(id, content);
+                if (await diffAppService.SetRightDiffContent(diffContent))
+                    return Ok();
 
-            return BadRequest();
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -75,11 +115,15 @@ namespace ScalableDiff.Controllers.v1
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult> ExecuteAsync(Guid id)
         {
-            var diffSummary = await diffAppService.ExecuteDiff(id);
-            if(diffSummary != null)
+            try
+            {
+                var diffSummary = await diffAppService.ExecuteDiff(id);
                 return Ok(diffSummary);
-
-            return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

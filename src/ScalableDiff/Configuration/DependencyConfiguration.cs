@@ -2,6 +2,7 @@
 using ScalableDiff.Application.Profiles;
 using ScalableDiff.Application.Services;
 using ScalableDiff.Domain;
+using ScalableDiff.Domain.Factories;
 using ScalableDiff.Domain.Models;
 using ScalableDiff.Domain.Processors;
 using ScalableDiff.Domain.Stores;
@@ -29,6 +30,7 @@ namespace ScalableDiff.Configuration
         public static void AddDomain(this IServiceCollection services)
         {
             services.AddScoped<IDiffService, DiffService>();
+            services.AddScoped<IDiffFactory, DiffFactory>();
             services.AddScoped<IDiffAppService, DiffAppService>();
 
             /*

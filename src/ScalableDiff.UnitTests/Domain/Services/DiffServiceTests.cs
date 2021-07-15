@@ -1,5 +1,6 @@
 ﻿using Moq;
 using ScalableDiff.Domain;
+using ScalableDiff.Domain.Factories;
 using ScalableDiff.Domain.Models;
 using ScalableDiff.Domain.Stores;
 using ScalableDiff.Domain.ValueObjects;
@@ -23,18 +24,36 @@ namespace ScalableDiff.UnitTests.Domain.Services
         }
 
         [Fact]
-        public async Task GettingDiffAsync_WithValidId_ShouldReturnBlankDiffWithId()
+        public async Task CreatingDiffAsync_WithValidId_ShouldReturnBlankDiffWithId()
         {
             // Arrange
-            var service = SetupService();
+            var service = SetupService(diffFactory: new DiffFactory());
             var expectedId = Guid.Parse("92CB8471-9AC2-44C1-9D04-27AA60F6A194");
 
             // Act
-            var actualDiff = await service.GetAsync(expectedId);
+            var actualDiff = await service.CreateAsync(expectedId);
 
             // Assert
             Assert.NotNull(actualDiff);
             Assert.Equal(expectedId, actualDiff.Id);
+            Assert.Empty(actualDiff.Left.Content);
+            Assert.Empty(actualDiff.Right.Content);
+        }
+
+        [Fact]
+        public async Task CreatingDiffAsync_WithExistingId_ShouldThrowInvalidOperationException()
+        {
+            // Arrange
+            var expectedId = Guid.Parse("3722D6DA-1069-47EE-A746-76B3CFC04C46");
+            var expectedDiff = SetupDiff(expectedId);
+
+            var storeMock = new Mock<IStore<Diff>>();
+            storeMock.Setup(m => m.ReadAsync(expectedId)).ReturnsAsync(expectedDiff);
+
+            var service = SetupService(store: storeMock.Object);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() => service.CreateAsync(expectedId));
         }
 
         [Fact]
@@ -55,6 +74,26 @@ namespace ScalableDiff.UnitTests.Domain.Services
             // Assert
             Assert.NotNull(actualDiff);
             Assert.Equal(expectedId, actualDiff.Id);
+            Assert.Equal(expectedDiff, actualDiff);
+        }
+
+        [Fact]
+        public async Task GettingDiffAsync_WithNonExistingId_ShouldReturnNull()
+        {
+            // Arrange
+            var expectedId = Guid.Parse("348ECFBD-BA04-4F6C-8344-725FA8A0FD1C");
+            Diff expectedDiff = null;
+
+            var storeMock = new Mock<IStore<Diff>>();
+            storeMock.Setup(m => m.ReadAsync(expectedId)).ReturnsAsync(expectedDiff);
+
+            var service = SetupService(storeMock.Object);
+
+            // Act
+            var actualDiff = await service.GetAsync(expectedId);
+
+            // Assert
+            Assert.Null(actualDiff);
             Assert.Equal(expectedDiff, actualDiff);
         }
 
@@ -112,24 +151,25 @@ namespace ScalableDiff.UnitTests.Domain.Services
             Assert.Equal(expectedProcessorResult, actualResult);
         }
 
+        private static DiffProcessorResult SetupProcessorResult(bool match = true, string message = null)
+        {
+            return DiffProcessorResult.Create(match, message);
+        }
+
         private static Diff SetupDiff(Guid id, string leftContent = null, string rightContent = null)
         {
-            var diff = Diff.Create(id);
+            var diff = new DiffFactory().Create(id);
             diff.SetLeftData(DiffData.Create(leftContent));
             diff.SetRightData(DiffData.Create(rightContent));
 
             return diff;
         }
 
-        private static DiffProcessorResult SetupProcessorResult(bool match = true, string message = null)
+        private static IDiffService SetupService(IStore<Diff> store = null, IDiffProcessor diffProcessor = null, IDiffFactory diffFactory = null)
         {
-            return DiffProcessorResult.Create(match, message);
-        }
-
-        private static IDiffService SetupService(IStore<Diff> Store = null, IDiffProcessor diffProcessor = null)
-        {
-            return new DiffService(Store ?? Mock.Of<IStore<Diff>>(),
-                                   diffProcessor ?? Mock.Of<IDiffProcessor>());
+            return new DiffService(diffFactory ?? Mock.Of<IDiffFactory>(),
+                                   diffProcessor ?? Mock.Of<IDiffProcessor>(),
+                                   store ?? Mock.Of<IStore<Diff>>());
         }
     }
 }

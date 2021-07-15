@@ -11,29 +11,6 @@ namespace ScalableDiff.Domain.Models
 
         public DiffData Right { get; protected set; }
 
-        protected Diff() { }
-
-        /// <summary>
-        /// Creates a new diff with empty left and right contents using the provided id.
-        /// </summary>
-        /// <param name="Id">The diff id.</param>
-        /// <returns>A new Diff.</returns>
-        /// <exception cref="System.ArgumentException">
-        /// <paramref name="Id"/> is <c>empty</c>.
-        /// </exception>
-        public static Diff Create(Guid Id)
-        {
-            if(Id == Guid.Empty)
-                throw new ArgumentException(nameof(Id));
-
-            return new Diff
-            {
-                Id = Id,
-                Left = DiffData.Create(string.Empty),
-                Right = DiffData.Create(string.Empty)
-            };
-        }
-
         /// <summary>
         /// Sets the left diff data.
         /// </summary>
