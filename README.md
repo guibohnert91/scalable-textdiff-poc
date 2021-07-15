@@ -52,8 +52,8 @@ This will contain all entities, enums, interfaces, types and logic specific to t
 The diffing process is defined within this lib using a chain of responsability. It turns out to be simple to add, replace or swapp the text analysis/diffing steps.
 
 ### Infrastructure
-This project is suposed to contain classes for accessing external resources such as databases, web services, smtp, and so on. 
-Here it's possible to find a Store implenentation specified in the domain layer, that works with in memory data.
+This project is suposed to contain classes for accessing external resources such as databases, web services, etc.
+Here it's possible to find a Store implementation specified in the domain layer, that works with in memory data.
 
 ## WebApi
 This is a web api application based on ASP.NET 5.0.x. Here it will define the diff controller and register the dependency graph as well.
