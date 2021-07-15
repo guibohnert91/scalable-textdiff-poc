@@ -10,7 +10,7 @@ It's possible to execute via command line too, folllowing some steps:
 
 ### Unit Tests
 
-There are 26 unit tests available that cover most of the implementation.
+There are unit tests available that cover most of the implementation.
 I didn't implement the Models and AutoMapper profiles tests.
 To run the unit tests, use the following steps:
 
@@ -20,7 +20,7 @@ To run the unit tests, use the following steps:
 
 ### Integration Tests
 
-There are 6 integration tests available that cover some api scenarios (positive/negative).
+There are integration tests available that cover some api scenarios (positive/negative).
 To run the integration tests, use the following steps:
 
 - 1: Navigate to the project folder ```scr/ScalableDiff.IntegrationTests/```
