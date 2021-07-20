@@ -14,6 +14,6 @@ namespace ScalableDiff.Domain
         /// <param name="left">The left diff data to compare.</param>
         /// <param name="right">The right diff data to compare.</param>
         /// <returns>The processor result.</returns>
-        Task<DiffProcessorResult> Execute(DiffData left, DiffData right);
+        Task<DiffProcessorResult> ExecuteAsync(DiffData left, DiffData right);
     }
 }

@@ -29,7 +29,6 @@ namespace ScalableDiff.Configuration
         /// </summary>
         public static void AddDomain(this IServiceCollection services)
         {
-            services.AddScoped<IDiffService, DiffService>();
             services.AddScoped<IDiffFactory, DiffFactory>();
             services.AddScoped<IDiffAppService, DiffAppService>();
 

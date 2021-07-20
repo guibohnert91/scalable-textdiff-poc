@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ScalableDiff.Application.Models;
 using ScalableDiff.Domain;
+using ScalableDiff.Domain.Factories;
 using ScalableDiff.Domain.Models;
 using ScalableDiff.Domain.Stores;
 using ScalableDiff.Domain.ValueObjects;
@@ -46,15 +47,19 @@ namespace ScalableDiff.Application.Services
     /// <inheritdoc />    
     public class DiffAppService : IDiffAppService
     {
-        private readonly IDiffService diffService;
-
+        private readonly IDiffFactory diffFactory;
+        private readonly IDiffProcessor diffProcessor;
         private readonly IStore<Diff> diffStore;
 
         private readonly IMapper mapper;
 
-        public DiffAppService(IDiffService diffService, IStore<Diff> diffStore, IMapper mapper)
+        public DiffAppService(IDiffFactory diffFactory,
+                              IDiffProcessor diffProcessor,
+                              IStore<Diff> diffStore, 
+                              IMapper mapper)
         {
-            this.diffService = diffService;
+            this.diffFactory = diffFactory;
+            this.diffProcessor = diffProcessor;
             this.diffStore = diffStore;
             this.mapper = mapper;
         }
@@ -68,11 +73,12 @@ namespace ScalableDiff.Application.Services
         /// </exception>
         public async Task<bool> CreateDiff(Guid id)
         {
-            if (id == Guid.Empty)
-                throw new ArgumentException(nameof(id), "Diff id must not be empty.");
+            var existentDiff = await diffStore.ReadAsync(id);
+            if (existentDiff != null)
+                throw new InvalidOperationException("Diff already exists");
 
-            // Currently not using the return diff value.
-            await diffService.CreateAsync(id);
+            var diff = diffFactory.Create(id);
+            await diffStore.WriteAsync(id, diff);
 
             return true;
         }
@@ -91,7 +97,7 @@ namespace ScalableDiff.Application.Services
 
             var diff = await GetDiffAsync(id);
 
-            var diffResult = await diffService.ExecuteAsync(diff);            
+            var diffResult = await diffProcessor.ExecuteAsync(diff.Left, diff.Right);            
             var diffSummary = mapper.Map<DiffSummary>(diffResult);
             return diffSummary;
         }
@@ -149,7 +155,7 @@ namespace ScalableDiff.Application.Services
 
         private async Task<Diff> GetDiffAsync(Guid id)
         {
-            var diff = await diffService.GetAsync(id);
+            var diff = await diffStore.ReadAsync(id);
             if (diff == null)
                 throw new InvalidOperationException($"Invalid diff id.");
 

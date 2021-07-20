@@ -17,7 +17,7 @@ namespace ScalableDiff.UnitTests.Domain.Processors
             var processor = SetupProcessor();
 
             // Act
-            var actualResult = await processor.Execute(expectedLeftData, expectedRightData);
+            var actualResult = await processor.ExecuteAsync(expectedLeftData, expectedRightData);
 
             // Assert
             Assert.True(actualResult.Handled);
@@ -34,7 +34,7 @@ namespace ScalableDiff.UnitTests.Domain.Processors
             var processor = SetupProcessor();
 
             // Act
-            var actualResult = await processor.Execute(expectedLeftData, expectedRightData);
+            var actualResult = await processor.ExecuteAsync(expectedLeftData, expectedRightData);
 
             // Assert
             Assert.False(actualResult.Handled);
